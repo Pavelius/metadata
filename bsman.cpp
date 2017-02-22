@@ -38,7 +38,7 @@ int bsman::indexof(const void* object) const
 void bsman::clear(const bsref& e)
 {
 	// First clean up all tables and free resources
-	for(auto f = e.fields; f->identifier; f++)
+	for(auto f = e.fields; f->id; f++)
 	{
 		if(f->istable())
 		{

@@ -14,18 +14,15 @@
 
 #include "bsfield.h"
 
-extern "C" int strcmp(const char* s1, const char* s2);
-
-bsfield number_type[2] = {{"number"}, {0}};
-bsfield text_type[2] = {{"text"}, {0}};;
-
-const bsfield* bsfield::find(const char* name) const
+const bsfield* bsfield::find(int id) const
 {
 	if(!this)
 		return 0;
-	for(auto p = this; p->identifier; p++)
+	for(auto p = this; p->id; p++)
 	{
-		if(strcmp(p->identifier, name) == 0)
+		if(p->to && id >= p->id && id <= p->to)
+			return p;
+		else if(p->id==id)
 			return p;
 	}
 	return 0;

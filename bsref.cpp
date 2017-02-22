@@ -16,14 +16,14 @@
 
 extern "C" int		memset(void* p1, unsigned char value, unsigned size);
 
-int bsref::get(const char* name) const
+int bsref::get(int id) const
 {
 	if(!fields)
 		return 0;
-	auto pf = fields->find(name);
+	auto pf = fields->find(id);
 	if(!pf)
 		return 0;
-	auto p = pf->ptr(object);
+	auto p = pf->to ? pf->ptr(object, id-pf->id) : pf->ptr(object);
 	switch(pf->size)
 	{
 	case sizeof(char) : return *((char*)p);
@@ -32,11 +32,11 @@ int bsref::get(const char* name) const
 	}
 }
 
-int bsref::get(const char* name, unsigned index) const
+int bsref::get(int id, unsigned index) const
 {
 	if(!fields)
 		return 0;
-	auto pf = fields->find(name);
+	auto pf = fields->find(id);
 	if(!pf || index >= pf->count)
 		return 0;
 	auto p = pf->ptr(object, index);
@@ -48,11 +48,11 @@ int bsref::get(const char* name, unsigned index) const
 	}
 }
 
-void bsref::set(const char* name, int value, unsigned index)
+void bsref::set(int id, int value, unsigned index)
 {
 	if(!fields)
 		return;
-	auto pf = fields->find(name);
+	auto pf = fields->find(id);
 	if(!pf)
 		return;
 	const void* p;
@@ -63,7 +63,7 @@ void bsref::set(const char* name, int value, unsigned index)
 		p = pf->ptr(object, index);
 	}
 	else
-		p = pf->ptr(object);
+		p = pf->to ? pf->ptr(object, id - pf->id) : pf->ptr(object);
 	switch(pf->size)
 	{
 	case sizeof(char) : *((char*)p) = value; break;
@@ -72,41 +72,21 @@ void bsref::set(const char* name, int value, unsigned index)
 	}
 }
 
-bsref bsref::getr(const char* name) const
-{
-	if(!fields)
-		return{0, 0};
-	auto pf = fields->find(name);
-	if(!pf)
-		return{0, 0};
-	return{pf->type, (void*)pf->ptr(object)};
-}
-
-bsref bsref::getr(const char* name, unsigned index) const
-{
-	if(!fields)
-		return{0, 0};
-	auto pf = fields->find(name);
-	if(!pf || index >= pf->count)
-		return{0, 0};
-	return{pf->type, (void*)pf->ptr(object, index)};
-}
-
-const void* bsref::ptr(const char* name) const
+const void* bsref::ptr(int id) const
 {
 	if(!fields)
 		return 0;
-	auto pf = fields->find(name);
+	auto pf = fields->find(id);
 	if(!pf)
 		return 0;
-	return pf->ptr(object);
+	return pf->to ? pf->ptr(object, id - pf->id) : pf->ptr(object);
 }
 
-const void* bsref::ptr(const char* name, unsigned index) const
+const void* bsref::ptr(int id, unsigned index) const
 {
 	if(!fields)
 		return 0;
-	auto pf = fields->find(name);
+	auto pf = fields->find(id);
 	if(!pf || index >= pf->count)
 		return 0;
 	return pf->ptr(object, index);
@@ -116,7 +96,7 @@ void bsref::clear() const
 {
 	if(!fields)
 		return;
-	for(auto f = fields; f->identifier; f++)
+	for(auto f = fields; f->id; f++)
 	{
 		if(f->istable())
 		{
@@ -130,7 +110,7 @@ void bsref::clear() const
 
 bool bsref::isempthy() const
 {
-	for(auto f = fields; f->identifier; f++)
+	for(auto f = fields; f->id; f++)
 	{
 		auto p1 = static_cast<const char*>(f->ptr(object));
 		auto p2 = p1 + f->lenght;
