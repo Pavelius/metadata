@@ -8,13 +8,15 @@ struct bsfield
 	};
 	template<class T> struct tinf { static constexpr type_s type = Object; };
 	template<> struct tinf<int> { static constexpr type_s type = Number; };
-	template<> struct tinf<short> { static constexpr type_s type = Number; };
 	template<> struct tinf<unsigned> { static constexpr type_s type = Number; };
+	template<> struct tinf<short> { static constexpr type_s type = Number; };
 	template<> struct tinf<unsigned short> { static constexpr type_s type = Number; };
 	template<> struct tinf<char> { static constexpr type_s type = Number; };
 	template<> struct tinf<unsigned char> { static constexpr type_s type = Number; };
 	template<> struct tinf<const char*> { static constexpr type_s type = Text; };
 	template<> struct tinf<const char*[2]> { static constexpr type_s type = Text; };
+	template<> struct tinf<const char*[3]> { static constexpr type_s type = Text; };
+	template<> struct tinf<const char*[4]> { static constexpr type_s type = Text; };
 	template<class T> struct info
 	{
 		static constexpr int size = sizeof(T);
@@ -30,7 +32,8 @@ struct bsfield
 		static constexpr int size = sizeof(T);
 		static constexpr int count = 0;
 	};
-	int			id, type; // field identifier
+	int			id;
+	type_s		type; // field identifier
 	unsigned	offset; // offset from begin of class or object
 	unsigned	size; // size of single element
 	unsigned	lenght; // total size in bytes of all field (array has size*count)
