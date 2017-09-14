@@ -2,7 +2,6 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="bsfield.cpp" />
     <ClCompile Include="bsref.cpp" />
     <ClCompile Include="crt_memory.cpp" />
     <ClCompile Include="bsman.cpp" />

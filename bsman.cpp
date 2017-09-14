@@ -37,15 +37,6 @@ int bsman::indexof(const void* object) const
 
 void bsman::clear(const bsref& e)
 {
-	// First clean up all tables and free resources
-	for(auto f = e.fields; f->id; f++)
-	{
-		if(f->istable())
-		{
-			auto p = reinterpret_cast<aref<char*>*>(static_cast<char*>(e.object) + f->offset);
-			p->clear();
-		}
-	}
 	memcpy(e.object, clone, size);
 }
 

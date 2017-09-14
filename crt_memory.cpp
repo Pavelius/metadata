@@ -49,7 +49,7 @@ void* operator new(unsigned size)
 	p->signature[1] = 'R';
 	p->signature[2] = 'T';
 	p->signature[3] = 0;
-	p->size = size;
+	p->size = (unsigned)size;
 	p->next = 0;
 	seqlast(&first_block)->next = p;
 	return p + 1;
